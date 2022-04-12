@@ -1,18 +1,18 @@
 # Chapter 1: Language Structure Traps
 ## Presentation traps
-1. Use typedef instead of macros
+1. Use typedef instead of macros for defining new types
 ```c
 #define PTR_CHAR char * /* Not compliant */
 
 typedef char * pchar; /* Compliant */
 ```
-2. Initialize all or none elements in arrays
+2. Initialize all or none elements in arrays (By default, other non-initialized elements gets zero value)
 ```c
 int arr[3] = {1}; /* Not compliant */
 
 int arr[3] = {1 ,2, 3}; /* Compliant */
 ```
-3. Specify data type with static keyword
+3. Specify data types while using static keyword (By default, static variables are integers)
 ```c
 static x; /* Not compliant */
 
@@ -47,6 +47,23 @@ int x = y;
 y = y + 1; /* Compliant */
 ```
 8. Use curly braces to specify scopes
+```c
+if(x == 1)
+    if(y == 0)
+else /* Not compliant */
+
+if(x == 1)
+{
+    if(y == 0)
+    {
+
+    }
+}
+else
+{
+
+} /* Compliant */
+```
 9. Take care of indentation
 ```c
 if(x == 1)
@@ -64,7 +81,7 @@ int mx; /* Not compliant */
 
 int maximumValue; /* Compliant */
 ```
-11. Don't depend on C implicit types and defaults
+11. Don't depend on C implicit types and defaults(By default, functions' return-type is an integer)
 ```c
 fun(x, y){
 
@@ -74,7 +91,7 @@ int fun(x, y){
 
 } /* Compliant */
 ```
-12. Limited use of macros and comma operators
+12. Limit the usage of macros and comma operators
 
 ## Lexical traps
 1. Specify logical operands for logical operators
@@ -96,7 +113,7 @@ if(x == 0.7) /* Not compliant */
 
 if(x == (float)0.7) /* Compliant */
 ```
-4. Limited use of assignment operators
+4. Limit the usage of assignment operators
 ```c
 x+=1; /* Not compliant */
 
@@ -118,18 +135,7 @@ C = getchar();
 Q[i] = C; /* Compliant */ 
 ``` 
 2. Don't rely on precedence rules
-```c
-x=y*a/b+z /* Not compliant */
-
-x = (y * a) / (b + z); /* Compliant */
-```
 3. Limit the usage of post/pre increment/decrement specially within lines
-```c
-int x = y++; /* Not compliant */
-
-int x = y;
-y = y + 1; /* Compliant */
-```
 4. Avoid abusive syntax
 ```c
 for(;i--; x[i] = 0) /* Not compliant */
@@ -138,7 +144,7 @@ for(i = 50;i == 0;--i){
     x[i] = 0;
 } /* Compliant */
 ```
-5. Avoid declaring variables inside switch-case scope
+5. Avoid declaring variables inside the switch-case scope
 ```c
 switch(a)
 {
@@ -162,7 +168,7 @@ if(x == 0)
     return /* Not compliant */
 x = 1;
 ```
-7. Use break for each case in switch-case
+7. Use the break keyword for each case in switch-case
 ```c
 switch(a)
 {
@@ -199,23 +205,6 @@ switch(a)
 } /* Compliant */
 ```
 8. Use curly braces to specify scopes
-```c
-if(x == 1)
-    if(y == 0)
-else /* Not compliant */
-
-if(x == 1)
-{
-    if(y == 0)
-    {
-
-    }
-}
-else
-{
-
-} /* Compliant */
-```
 9. Use empty braces instead of empty null statements
 ```c
 if(x == 1){
@@ -231,7 +220,7 @@ else{} /* Compliant */
 
 ## Semantic traps
 1. Use array notation with arrays, and poiner notation with pointers
-2. Overflow affects sign, while modulo affects maximum size (Use casting to avoid those traps)
+2. Use casting to avoid overflow and modulo effects (Overflow affects sign, while modulo affects maximum size)
 3. Take care of missing return statements
 ```c
 fun(x){
@@ -245,7 +234,7 @@ fun(x){
     else return -1;
 } /* Compliant */
 ```
-4. Don't return address of a local variable
+4. Don't return an address of a local variable
 ```c
 int *fun(){
     int x = 0;
@@ -309,5 +298,8 @@ min(x++,y); /* Not compliant */
 2. Operations with double convert smaller types to double
 3. Integer promotion takes place on arithmetic operations between smaller types (int or unsigned int depends on the value size)
 4. In arithmetic operations:
-     • If types are different but signs are equal? convert the smaller types to bigger ones
-     • if signs are different? if types are equal? convert the unsigned to signed : if bigger type is unsigned? convert the smaller to unsigned and expand its size : if bigger type is signed? convert the smaller to signed and expand its size
+    * If types are different but signs are equal? convert the smaller types to bigger ones
+    * if signs are different? 
+        * if types are equal? convert the unsigned to signed
+        * if the bigger type is unsigned? convert the smaller to unsigned and expand its size
+        * if the bigger type is signed? convert the smaller to signed and expand its size
